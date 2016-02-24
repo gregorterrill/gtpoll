@@ -1,0 +1,63 @@
+{% extends "_layouts/cp" %}
+
+{% includeJsResource "gtpoll/js/gtPoll.js" %}
+
+{% set title =  craft.gtPoll.getPluginName|t %}
+
+{% set tabs = {
+    active: { label: "List Polls"|t, url: url('gtpoll') },
+    manage: { label: "Manage Polls"|t, url: url('gtpoll/edit') },
+    settings: { label: "Settings"|t, url: url('settings/plugins/gtpoll') }
+} %}
+
+{% set selectedTab = 'active' %}
+
+{% set polls = craft.gtPoll.polls %}
+
+{% set content %}
+    
+    {% if polls|length %}
+        <table class="data fullwidth">
+            <thead>
+                <tr>
+                    <th scope="col">{{ "Poll Question"|t }}</th>
+                    <th scope="col">{{ "Answers"|t }}</th>
+                    <th scope="col">{{ "Total Responses"|t }}</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for poll in polls %}
+                {% set answers = craft.gtPoll.answers(poll.id) %}
+                {% set responses = craft.gtPoll.responses(poll.id) %}
+                {% set status = 'disabled' %}
+                {% if poll.active %}
+                    {% set status = 'live' %}
+                {% endif %}
+                <tr>
+                    <td data-title="Question Text">
+                        <div class="element small hasstatus" data-id="{{ poll.id }}" data-status="{{ status }}">
+                            <span class="status {{ status }}"></span>
+                            <a href="{{ url('gtpoll/edit/' ~ poll.id )}}">{{ poll.questionText }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        {% for answer in answers %}
+                          {{ answer.answerText }}{% if responses > 0 %} ({{ answer.responses }} responses - {{ ((answer.responses / responses) * 100)|round(2) }}%){% endif %}<br />
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {{ responses }}
+                    </td>
+                    <td>
+                        <a href="{{ actionUrl('gtPoll/poll/reset', { pollId: poll.id }) }}" class="delete icon gtPoll__reset"></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        {{ "No polls have been created yet!"|t }}
+    {% endif %}
+
+{% endset %}

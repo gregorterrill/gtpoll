@@ -1,0 +1,51 @@
+{% set pollId = test.poll %}
+{% set poll = craft.gtPoll.getPoll(pollId) %}       
+<div class="gtPoll{% if poll.active %} gtPoll--active{% else %} gtPoll--inactive{% endif %}">
+
+  <div class="gtPoll__question">
+    <form class="gtPoll__form" method="post" accept-charset="UTF-8" action="">
+      <input type="hidden" name="action" value="gtPoll/poll/incrementAnswer">     
+      <input type="hidden" name="poll" value="{{ pollId }}">
+
+      <h2 class="gtPoll__heading">Poll</h2>
+
+      <p class="gtPoll__question-text">{{ poll.questionText }}</p>
+
+      {% for answer in craft.gtPoll.getAnswers(pollId) %}
+
+        <label class="gtPoll__response-label" for="poll_{{ pollId }}[{{ answer.id }}]">
+          <input class="gtPoll__response-input" name="poll_{{ pollId }}" id="poll_{{ pollId }}[{{ answer.id }}]" type="radio" value="{{ answer.id }}"> {{ answer.answerText }}
+        </label>
+
+      {% endfor %}
+
+      <input type="submit" value="Submit" />
+
+    </form>
+  </div>        
+  <div class="gtPoll__results">
+
+    {% set responses = craft.gtPoll.responses(pollId) %}
+
+    <h2 class="gtPoll__heading">Poll Results</h2>
+
+    <p class="gtPoll__question-text">{{ poll.questionText }}</p>
+
+    <ul class="gtPoll__answer-list">
+
+    {% for answer in craft.gtPoll.getAnswers(pollId) %}
+
+      {% set percentage = 0 %}
+      {% if responses > 0 %}
+        {% set percentage = ((answer.responses / responses) * 100)|round(2) %}
+      {% endif %}
+
+      <li class="gtPoll__answer-item">
+        <p class="gtPoll__result-info">{{ answer.answerText }} ({{ answer.responses }} responses - {{ percentage }}%)</p>
+        <div class="gtPoll__result-bar" data-percentage="{{ percentage }}"></div>
+      </li>
+
+    {% endfor %}
+    </ul>
+  </div>
+</div>

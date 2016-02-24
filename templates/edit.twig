@@ -1,0 +1,111 @@
+{% extends "_layouts/cp" %}
+
+{% import "_includes/forms" as forms %}
+{% includeJsResource "gtpoll/js/gtPoll.js" %}
+
+{% set title = craft.gtPoll.getPluginName|t %}
+
+{% set tabs = {
+    active: { label: "List Polls"|t, url: url('gtpoll') },
+    manage: { label: "Manage Polls"|t, url: url('gtpoll/edit') },
+    settings: { label: "Settings"|t, url: url('settings/plugins/gtpoll') }
+} %}
+
+{% set selectedTab = 'manage' %}
+
+{% set content %}
+
+<form method="post" accept-charset="UTF-8" action="">
+    <input type="hidden" name="action" value="gtPoll/poll/savePoll">
+    {{ getCsrfInput() }}
+    
+   {% if pollId is defined %}
+
+    {% set poll = craft.gtPoll.getPoll(pollId) %}
+    {% set answers = craft.gtPoll.getAnswers(pollId) %}
+
+    <input type="hidden" name="pollId" value="{{ pollId }}">
+
+    <h2>Edit Poll #{{ pollId }}</h2>
+
+    {{ forms.textField({
+        label: "Question Text"|t,
+        id: 'question-' ~ pollId,
+        name: 'questionText',
+        value: poll.questionText
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Active"|t,
+        id: 'active-' ~ pollId,
+        name: 'active',
+        on: poll.active,
+    }) }}
+
+    <h3>Answers</h3>
+
+    {% if answers|length %}
+
+    {% set rows = [] %}
+
+    {% for answer in answers %}
+
+        {# row keys need to be a string or PHP will reset them from 0 #}
+        {% set rows = rows|merge({
+            ('answer_' ~ answer.id) : [answer.answerText]
+        }) %}
+
+    {% endfor %}
+        
+    {{ forms.editableTable({
+        label: "Answers"|t,
+        id: 'answers-' ~ pollId,
+        name: 'answers',
+        cols: [{
+            heading: 'Answer Text',
+            type: 'singleline',
+        }],
+        rows: rows
+    }) }}
+
+    {% endif %}
+
+    <br /><input type="submit" class="btn submit" value="{{ 'Update Poll'|t }}">
+
+   {% else %}
+
+    <h2>New Poll</h2>
+
+    {{ forms.textField({
+        label: "Question Text"|t,
+        id: 'question-new',
+        name: 'questionText',
+        value: ''
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Active"|t,
+        id: 'active-new',
+        name: 'active',
+        on: true,
+    }) }}
+
+    <h3>Answers</h3>
+
+    {{ forms.editableTable({
+        label: "Answers"|t,
+        id: 'answers-new',
+        name: 'answers',
+        cols: [{
+            heading: 'Answer Text',
+            type: 'singleline',
+        }]
+    }) }}
+
+    <br /><input type="submit" class="btn submit" value="{{ 'Create Poll'|t }}">
+
+   {% endif %}
+
+</form>
+
+{% endset %}

@@ -1,0 +1,34 @@
+{#
+/**
+ * GT Poll plugin for Craft CMS
+ *
+ * GtPoll_PollFieldType HTML
+ *
+ * @author    Gregor Terrill
+ * @copyright Copyright (c) 2016 Gregor Terrill
+ * @link      http://gregorterrill.com
+ * @package   GtPoll
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% set polls = craft.gtPoll.polls %}
+
+{% set options = [] %}
+
+{% for poll in polls %}
+
+  {% set options = options|merge({
+    ('poll_' ~ poll.id) : poll.questionText
+  }) %}
+
+{% endfor %}
+
+{{ forms.selectField({
+    id: id,
+    name: name,
+    options: options,
+    value: 'poll_' ~ values
+}) }}
