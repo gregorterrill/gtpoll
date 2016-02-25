@@ -43,8 +43,9 @@ class GtPoll_PollFieldType extends BaseFieldType
      */
     public function getInputHtml($name, $value)
     {
-        if (!$value)
+        if (!$value) {
             $value = new GtPoll_PollModel();
+        }
 
         $id = craft()->templates->formatInputId($name);
         $namespacedId = craft()->templates->namespaceInputId($id);
@@ -55,7 +56,7 @@ class GtPoll_PollFieldType extends BaseFieldType
             'name' => $name,
             'namespaceId' => $namespacedId,
             'values' => $value
-            );
+        );
 
         return craft()->templates->render('gtpoll/fields/GtPoll_PollFieldType.twig', $variables);
     }

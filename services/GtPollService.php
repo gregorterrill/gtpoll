@@ -52,21 +52,25 @@ class GtPollService extends BaseApplicationComponent
 
                 // for each answer...
                 foreach ($answers as $answer) {
+
+                    // make sure the model is valid
+                    if ($answer->validate()) {
                     
-                    // ...if the answer already exists, and this is an existing poll, we'll update it
-                    if ($answer->id && !$newPoll) {
-                        $answerRecord = GtPoll_AnswerRecord::model()->findById($answer->id);
-                    // ...otherwise we'll create a new answer
-                    } else {
-                        $answerRecord = new GtPoll_AnswerRecord();
+                        // ...if the answer already exists, and this is an existing poll, we'll update it
+                        if ($answer->id && !$newPoll) {
+                            $answerRecord = GtPoll_AnswerRecord::model()->findById($answer->id);
+                        // ...otherwise we'll create a new answer
+                        } else {
+                            $answerRecord = new GtPoll_AnswerRecord();
+                        }
+
+                        // set the answer text, position, and poll, then save it
+                        $answerRecord->position = $answer->position;
+                        $answerRecord->answerText = $answer->answerText;
+                        $answerRecord->pollId = $pollRecord->id;
+
+                        $answerRecord->save();
                     }
-
-                    // set the answer text, position, and poll, then save it
-                    $answerRecord->position = $answer->position;
-                    $answerRecord->answerText = $answer->answerText;
-                    $answerRecord->pollId = $pollRecord->id;
-
-                    $answerRecord->save();
                 }
                 return true;
             }

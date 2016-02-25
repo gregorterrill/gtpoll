@@ -29,9 +29,11 @@ class GtPoll_PollController extends BaseController
     {
         $this->requirePostRequest();
 
+        // get POST data
         $pollId = craft()->request->getPost('poll');
         $answerId = craft()->request->getPost('poll_' . $pollId);
 
+        // increment the answer's response count
         if (craft()->gtPoll->incrementAnswer($answerId)) {
             return true;
         } else {
@@ -46,18 +48,20 @@ class GtPoll_PollController extends BaseController
     {
         $this->requirePostRequest();
 
+        // create a new poll model and populate it from our POST data
         $poll = new GtPoll_PollModel();
-
         $poll->id = craft()->request->getPost('pollId');
         $poll->questionText = craft()->request->getPost('questionText');
         $poll->active = craft()->request->getPost('active');
 
+        // initialize our array to hold our answer models and zero-based position
         $answers = array();
-
         $position = 0;
 
+        // for each answer in the POST data...
         foreach (craft()->request->getPost('answers') as $answerId => $answerText) {
 
+            // ...create a new answer model and populate it
             $answer = new GtPoll_AnswerModel();
             if ($answerId) {
                 // we have to store this key as a string in the template, here we convert it back
@@ -65,11 +69,13 @@ class GtPoll_PollController extends BaseController
             }
             $answer->answerText = $answerText[0];
             $answer->position = $position;
-            $answers[] = $answer;
 
+            // add the answer model to our array and increment position
+            $answers[] = $answer;
             $position++;
         }
-        
+
+        // save the poll with our answers and show the user feedback
         if (craft()->gtPoll->savePoll($poll, $answers)) {
             craft()->userSession->setNotice(Craft::t('Poll saved.'));
             $this->redirect('gtpoll');
