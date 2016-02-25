@@ -27,8 +27,10 @@ class GtPollService extends BaseApplicationComponent
     {
         $newPoll = true;
 
+        // make sure the model is valid
         if ($poll->validate()) {
 
+            // if the poll id already exists, we're updating an existing record...
             if ($poll->id) {
                 $pollRecord = GtPoll_PollRecord::model()->findById($poll->id);
                 $newPoll = false;
@@ -36,23 +38,30 @@ class GtPollService extends BaseApplicationComponent
                 if (!$pollRecord) {
                     throw new Exception(Craft::t('No poll exists with the ID “{id}”', array('id' => $poll->id)));
                 }
+            // ...otherwise we'll create a new one
             } else {
                 $pollRecord = new GtPoll_PollRecord();
             }
 
+            // set the text and status of the poll
             $pollRecord->questionText = $poll->questionText;
             $pollRecord->active = $poll->active;
 
+            // save the record, so we can save our answers with the relationship
             if ($pollRecord->save()) {
 
-                //update all the answers
+                // for each answer...
                 foreach ($answers as $answer) {
                     
+                    // ...if the answer already exists, and this is an existing poll, we'll update it
                     if ($answer->id && !$newPoll) {
                         $answerRecord = GtPoll_AnswerRecord::model()->findById($answer->id);
+                    // ...otherwise we'll create a new answer
                     } else {
                         $answerRecord = new GtPoll_AnswerRecord();
                     }
+
+                    // set the answer text, position, and poll, then save it
                     $answerRecord->position = $answer->position;
                     $answerRecord->answerText = $answer->answerText;
                     $answerRecord->pollId = $pollRecord->id;
@@ -62,25 +71,38 @@ class GtPollService extends BaseApplicationComponent
                 return true;
             }
         }
-
         return false;
     }
 
     /**
      * Returns all polls
      * @param bool $activeOnly
-     * @return GtPoll_PollModel
+     * @return array
      */
     public function getPolls($activeOnly)
     {
-        // get record from DB
+        // get records from DB
         if ($activeOnly) {
             $pollRecords = GtPoll_PollRecord::model()->findAllByAttributes(array('active' => 1));
         } else {
             $pollRecords = GtPoll_PollRecord::model()->findAll();
-        }       
+        }
 
-        return $pollRecords;
+         // create an array we'll use to store the poll models
+        $polls = array();
+
+        // if we have records...
+        if ($pollRecords) {
+            // ...create a model for each, populate it, and add it to the array
+            foreach ($pollRecords as $pollRecord) {
+                $pollModel = new GtPoll_PollModel();
+                $pollModel = GtPoll_PollModel::populateModel($pollRecord);
+                $polls[] = $pollModel;            
+            }
+        }
+
+        // return the array of populated poll models
+        return $polls;
     }
 
     /**
@@ -96,12 +118,12 @@ class GtPollService extends BaseApplicationComponent
         // get record from DB
         $pollRecord = GtPoll_PollRecord::model()->findById($pollId);
         
-        if ($pollRecord)
-        {
-            // populate model from record
+        // if the record exists, populate model from record
+        if ($pollRecord) {            
             $pollModel = GtPoll_PollModel::populateModel($pollRecord);
         }
 
+        // return the populated poll model
         return $pollModel;
     }
 
@@ -112,22 +134,26 @@ class GtPollService extends BaseApplicationComponent
      */
     public function getAnswers($pollId)
     {
-        // get record from DB
+        // get records from DB
         $answerRecords = GtPoll_AnswerRecord::model()->findAllByAttributes(
             array('pollId' => $pollId), 
             array('order' => 'position asc')
         );
 
+        // create an array we'll use to store the answer models
         $answers = array();
 
+        // if we have records...
         if ($answerRecords) {
-        
-            foreach ($answerRecords as $answerRecord)
-            {                
-                $answers[] = $answerRecord;            
+            // ...create a model for each, populate it, and add it to the array
+            foreach ($answerRecords as $answerRecord) {
+                $answerModel = new GtPoll_AnswerModel();
+                $answerModel = GtPoll_AnswerModel::populateModel($answerRecord);
+                $answers[] = $answerModel;            
             }
         }
 
+        // return the array of populated answer models
         return $answers;
     }
 
@@ -138,19 +164,20 @@ class GtPollService extends BaseApplicationComponent
      */
     public function getResponses($pollId)
     {
-        // get record from DB
-        $answerRecords = GtPoll_AnswerRecord::model()->findAllByAttributes(array('pollId' => $pollId));
-
         $responses = 0;
 
+        // get all answer records from DB that match this poll
+        $answerRecords = GtPoll_AnswerRecord::model()->findAllByAttributes(array('pollId' => $pollId));
+
+        // if we have records...
         if ($answerRecords) {
-        
-            foreach ($answerRecords as $answerRecord)
-            {
+            //...loop through each and sum their response counts
+            foreach ($answerRecords as $answerRecord) {
                 $responses += $answerRecord->responses;
             }
         }
 
+        // return the sum of all responses
         return $responses;
     }
 
@@ -160,12 +187,12 @@ class GtPollService extends BaseApplicationComponent
      */
     public function incrementAnswer($answerId)
     {
-         // get record from DB
+        // get record from DB
         $answerRecord = GtPoll_AnswerRecord::model()->findById($answerId);
 
-        // if exists then increment responses
-        if ($answerRecord)
-        {
+        // if the record exists...
+        if ($answerRecord) {
+            //...increment the responses and save
             $answerRecord->setAttribute('responses', $answerRecord->getAttribute('responses') + 1);
             $answerRecord->save();
         }
@@ -177,13 +204,13 @@ class GtPollService extends BaseApplicationComponent
      */
     public function resetAnswers($pollId)
     {
-         // get records from DB
+        // get all answer records from DB that match this poll
         $answerRecords = GtPoll_AnswerRecord::model()->findAllByAttributes(array('pollId' => $pollId));
 
-        foreach ($answerRecords as $answerRecord) {
-            // if exists then clear responses
-            if ($answerRecord)
-            {
+        // if we have records...
+        if ($answerRecords) {
+            // ...loop through all the records and clear their responses
+            foreach ($answerRecords as $answerRecord) {
                 $answerRecord->setAttribute('responses', 0);
                 $answerRecord->save();
             }
