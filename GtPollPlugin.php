@@ -16,26 +16,9 @@ namespace Craft;
 
 class GtPollPlugin extends BasePlugin
 {
-    /**
-     * Called after the plugin class is instantiated; do any one-time initialization here such as hooks and events:
-     *
-     * craft()->on('entries.saveEntry', function(Event $event) {
-     *    // ...
-     * });
-     *
-     * or loading any third party Composer packages via:
-     *
-     * require_once __DIR__ . '/vendor/autoload.php';
-     *
-     * @return mixed
-     */
-    public function init()
-    {
-    }
 
     /**
      * Returns the user-facing name.
-     *
      * @return mixed
      */
     public function getName()
@@ -49,7 +32,6 @@ class GtPollPlugin extends BasePlugin
     /**
      * Plugins can have descriptions of themselves displayed on the Plugins page by adding a getDescription() method
      * on the primary plugin class:
-     *
      * @return mixed
      */
     public function getDescription()
@@ -60,7 +42,6 @@ class GtPollPlugin extends BasePlugin
     /**
      * Plugins can have links to their documentation on the Plugins page by adding a getDocumentationUrl() method on
      * the primary plugin class:
-     *
      * @return string
      */
     public function getDocumentationUrl()
@@ -72,7 +53,6 @@ class GtPollPlugin extends BasePlugin
      * Plugins can now take part in Craft’s update notifications, and display release notes on the Updates page, by
      * providing a JSON feed that describes new releases, and adding a getReleaseFeedUrl() method on the primary
      * plugin class.
-     *
      * @return string
      */
     public function getReleaseFeedUrl()
@@ -82,7 +62,6 @@ class GtPollPlugin extends BasePlugin
 
     /**
      * Returns the version number.
-     *
      * @return string
      */
     public function getVersion()
@@ -95,7 +74,6 @@ class GtPollPlugin extends BasePlugin
      * case there are any new migrations that need to be run. Instead plugins must explicitly tell Craft that they
      * have new migrations by returning a new (higher) schema version number with a getSchemaVersion() method on
      * their primary plugin class:
-     *
      * @return string
      */
     public function getSchemaVersion()
@@ -105,7 +83,6 @@ class GtPollPlugin extends BasePlugin
 
     /**
      * Returns the developer’s name.
-     *
      * @return string
      */
     public function getDeveloper()
@@ -115,7 +92,6 @@ class GtPollPlugin extends BasePlugin
 
     /**
      * Returns the developer’s website URL.
-     *
      * @return string
      */
     public function getDeveloperUrl()
@@ -123,6 +99,10 @@ class GtPollPlugin extends BasePlugin
         return 'http://gregorterrill.com';
     }
 
+    /**
+     * Renders the Settings page
+     * @return string
+     */
     public function getSettingsHtml()
     {
         return craft()->templates->render('gtpoll/settings', array(
@@ -130,6 +110,10 @@ class GtPollPlugin extends BasePlugin
         ));
     }
 
+    /**
+     * Define settings for the plugin.
+     * @return array
+     */
     protected function defineSettings()
     {
         return array(
@@ -139,7 +123,6 @@ class GtPollPlugin extends BasePlugin
 
     /**
      * Returns whether the plugin should get its own tab in the CP header.
-     *
      * @return bool
      */
     public function hasCpSection()
@@ -147,6 +130,10 @@ class GtPollPlugin extends BasePlugin
         return true;
     }
 
+    /**
+     * Dynamic routes for editing individual polls
+     * @return array
+     */
     public function registerCpRoutes()
     {
         return array(

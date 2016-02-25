@@ -16,8 +16,32 @@ namespace Craft;
 
 class GtPoll_PollController extends BaseController
 {
+    /**
+     * Only increment answer is available to front-end users
+     */
     protected $allowAnonymous = array('actionIncrementAnswer');
 
+    /**
+     * Increment an answer's response count
+     * @return bool
+     */
+    public function actionIncrementAnswer()
+    {
+        $this->requirePostRequest();
+
+        $pollId = craft()->request->getPost('poll');
+        $answerId = craft()->request->getPost('poll_' . $pollId);
+
+        if (craft()->gtPoll->incrementAnswer($answerId)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Save a poll and it's answers
+     */
     public function actionSavePoll()
     {
         $this->requirePostRequest();
@@ -54,20 +78,9 @@ class GtPoll_PollController extends BaseController
         }
     }
 
-    public function actionIncrementAnswer()
-    {
-        $this->requirePostRequest();
-
-        $pollId = craft()->request->getPost('poll');
-        $answerId = craft()->request->getPost('poll_' . $pollId);
-
-        if (craft()->gtPoll->incrementAnswer($answerId)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    /**
+     * Reset all of a poll's answers' response counts
+     */
     public function actionReset()
     {
         $pollId = craft()->request->getRequiredParam('pollId');

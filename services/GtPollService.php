@@ -19,10 +19,8 @@ class GtPollService extends BaseApplicationComponent
 
     /**
      * Save a poll
-     *
      * @param GtPoll_PollModel $poll
      * @param array $answers
-     *
      * @return bool
      */
     public function savePoll(GtPoll_PollModel $poll, array $answers)
@@ -70,15 +68,12 @@ class GtPollService extends BaseApplicationComponent
 
     /**
      * Returns all polls
-     *
      * @param bool $activeOnly
-     *
      * @return GtPoll_PollModel
      */
     public function getPolls($activeOnly)
     {
         // get record from DB
-
         if ($activeOnly) {
             $pollRecords = GtPoll_PollRecord::model()->findAllByAttributes(array('active' => 1));
         } else {
@@ -89,10 +84,8 @@ class GtPollService extends BaseApplicationComponent
     }
 
     /**
-     * Returns poll
-     *
+     * Returns single poll
      * @param int $pollId
-     *
      * @return GtPoll_PollModel
      */
     public function getPoll($pollId)
@@ -113,11 +106,9 @@ class GtPollService extends BaseApplicationComponent
     }
 
     /**
-     * Returns answers for a poll
-     *
+     * Returns all answers for a poll
      * @param int $pollId
-     *
-     * @return GtPoll_PollModel
+     * @return array
      */
     public function getAnswers($pollId)
     {
@@ -142,10 +133,8 @@ class GtPollService extends BaseApplicationComponent
 
     /**
      * Returns response total for a poll
-     *
      * @param int $pollId
-     *
-     * @return GtPoll_PollModel
+     * @return int
      */
     public function getResponses($pollId)
     {
@@ -184,6 +173,7 @@ class GtPollService extends BaseApplicationComponent
 
     /**
      * Reset all the answer response counts for a given poll
+     * @param int $pollId
      */
     public function resetAnswers($pollId)
     {

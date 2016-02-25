@@ -4,12 +4,6 @@
  *
  * GtPoll_Poll FieldType
  *
- * --snip--
- * Whenever someone creates a new field in Craft, they must specify what type of field it is. The system comes with
- * a handful of field types baked in, and we’ve made it extremely easy for plugins to add new ones.
- *
- * https://craftcms.com/docs/plugins/field-types
- * --snip--
  *
  * @author    Gregor Terrill
  * @copyright Copyright (c) 2016 Gregor Terrill
@@ -24,7 +18,6 @@ class GtPoll_PollFieldType extends BaseFieldType
 {
     /**
      * Returns the name of the fieldtype.
-     *
      * @return mixed
      */
     public function getName()
@@ -34,7 +27,6 @@ class GtPoll_PollFieldType extends BaseFieldType
 
     /**
      * Returns the content attribute config.
-     *
      * @return mixed
      */
     public function defineContentAttribute()
@@ -68,6 +60,11 @@ class GtPoll_PollFieldType extends BaseFieldType
         return craft()->templates->render('gtpoll/fields/GtPoll_PollFieldType.twig', $variables);
     }
 
+    /**
+     * Prep the field value to be saved in the database
+     * @param mixed $value 
+     * @return int
+     */
     public function prepValueFromPost($value)
     {
         $value = (int)str_replace('poll_', '', $value);

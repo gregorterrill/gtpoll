@@ -4,12 +4,6 @@
  *
  * GT Poll Variable
  *
- * --snip--
- * Craft allows plugins to provide their own template variables, accessible from the {{ craft }} global variable
- * (e.g. {{ craft.pluginName }}).
- *
- * https://craftcms.com/docs/plugins/variables
- * --snip--
  *
  * @author    Gregor Terrill
  * @copyright Copyright (c) 2016 Gregor Terrill

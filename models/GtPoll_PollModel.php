@@ -4,12 +4,6 @@
  *
  * Poll Model
  *
- * --snip--
- * Models are containers for data. Just about every time information is passed between services, controllers, and
- * templates in Craft, it’s passed via a model.
- *
- * https://craftcms.com/docs/plugins/models
- * --snip--
  *
  * @author    Gregor Terrill
  * @copyright Copyright (c) 2016 Gregor Terrill
@@ -25,7 +19,6 @@ class GtPoll_PollModel extends BaseModel
 
     /**
      * Define what is returned when model is converted to string
-     *
      * @return string
      */
     public function __toString()
@@ -35,7 +28,6 @@ class GtPoll_PollModel extends BaseModel
 
     /**
      * Defines this model's attributes.
-     *
      * @return array
      */
     protected function defineAttributes()
