@@ -140,4 +140,15 @@ class GtPollPlugin extends BasePlugin
             'gtpoll/edit/(?P<pollId>\d+)' => 'gtpoll/edit',
        );
     }
+
+    /**
+     * Route for our front-end to trigger increment answer
+     * @return array
+     */
+    public function registerSiteRoutes()
+    {
+        return array(
+            'gtPoll/poll/incrementAnswer' => array( 'action' => 'gtPoll/poll/incrementAnswer')
+        );
+    }
 }

@@ -41,8 +41,8 @@
       {% endif %}
 
       <li class="gtPoll__answer-item">
-        <p class="gtPoll__result-info">{{ answer.answerText }} ({{ answer.responses }} responses - {{ percentage }}%)</p>
-        <div class="gtPoll__result-bar" data-percentage="{{ percentage }}"></div>
+        <p class="gtPoll__result-info">{{ answer.answerText }} (<span class="gtPoll__result-responses">{{ answer.responses }}</span> responses - <span class="gtPoll__result-percentage">{{ percentage }}</span>%)</p>
+        <div class="gtPoll__result-bar" data-answer="{{ answer.id }}" data-votes="{{ answer.responses }}" data-total="{{ responses }}" data-percentage="{{ percentage }}"></div>
       </li>
 
     {% endfor %}
