@@ -19,44 +19,54 @@
     <input type="hidden" name="action" value="gtPoll/poll/savePoll">
     {{ getCsrfInput() }}
     
-   {% if pollId is defined %}
+    {% if pollId is defined %}
 
-    {% set poll = craft.gtPoll.getPoll(pollId) %}
-    {% set answers = craft.gtPoll.getAnswers(pollId) %}
+        {% set poll = craft.gtPoll.getPoll(pollId) %}
+        {% set answers = craft.gtPoll.getAnswers(pollId) %}
 
-    <input type="hidden" name="pollId" value="{{ pollId }}">
+        <input type="hidden" name="pollId" value="{{ pollId }}">
 
-    <h2>Edit Poll #{{ pollId }}</h2>
+        <h2>Edit Poll #{{ pollId }}</h2>
+
+    {% else %}
+
+        {% set pollId = 'new' %}
+
+        <h2>New Poll</h2>
+
+    {% endif %}
 
     {{ forms.textField({
         label: "Question Text"|t,
         id: 'question-' ~ pollId,
         name: 'questionText',
-        value: poll.questionText
+        value: poll.questionText|default('')
     }) }}
 
     {{ forms.lightswitchField({
         label: "Active"|t,
         id: 'active-' ~ pollId,
         name: 'active',
-        on: poll.active,
+        on: poll.active|default(true)
     }) }}
 
     <h3>Answers</h3>
 
-    {% if answers|length %}
-
     {% set rows = [] %}
 
-    {% for answer in answers %}
+    {% if answers is defined and answers|length %}        
 
-        {# row keys need to be a string or PHP will reset them from 0 #}
-        {% set rows = rows|merge({
-            ('answer_' ~ answer.id) : [answer.answerText]
-        }) %}
+        {% for answer in answers %}
 
-    {% endfor %}
-        
+            {# row keys need to be a string or PHP will reset them from 0 #}
+            {% set rows = rows|merge({
+                ('answer_' ~ answer.id) : [answer.answerText]
+            }) %}
+
+        {% endfor %}
+
+    {% endif %}
+            
     {{ forms.editableTable({
         label: "Answers"|t,
         id: 'answers-' ~ pollId,
@@ -66,45 +76,9 @@
             type: 'singleline',
         }],
         rows: rows
-    }) }}
+    }) }}    
 
-    {% endif %}
-
-    <br /><input type="submit" class="btn submit" value="{{ 'Update Poll'|t }}">
-
-   {% else %}
-
-    <h2>New Poll</h2>
-
-    {{ forms.textField({
-        label: "Question Text"|t,
-        id: 'question-new',
-        name: 'questionText',
-        value: ''
-    }) }}
-
-    {{ forms.lightswitchField({
-        label: "Active"|t,
-        id: 'active-new',
-        name: 'active',
-        on: true,
-    }) }}
-
-    <h3>Answers</h3>
-
-    {{ forms.editableTable({
-        label: "Answers"|t,
-        id: 'answers-new',
-        name: 'answers',
-        cols: [{
-            heading: 'Answer Text',
-            type: 'singleline',
-        }]
-    }) }}
-
-    <br /><input type="submit" class="btn submit" value="{{ 'Create Poll'|t }}">
-
-   {% endif %}
+    <br /><input type="submit" class="btn submit" value="{{ 'Save Poll'|t }}">
 
 </form>
 
