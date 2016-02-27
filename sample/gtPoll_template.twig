@@ -4,7 +4,7 @@
 
   <div class="gtPoll__question">
     <form class="gtPoll__form" method="post" accept-charset="UTF-8" action="">
-      <input type="hidden" name="action" value="gtPoll/poll/incrementAnswer">     
+      <input type="hidden" name="action" value="{{ actionUrl('gtPoll/poll/incrementAnswer') }}">     
       <input type="hidden" name="poll" value="{{ pollId }}">
 
       <h2 class="gtPoll__heading">Poll</h2>

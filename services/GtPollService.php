@@ -198,8 +198,11 @@ class GtPollService extends BaseApplicationComponent
         if ($answerRecord) {
             //...increment the responses and save
             $answerRecord->setAttribute('responses', $answerRecord->getAttribute('responses') + 1);
-            $answerRecord->save();
+            if ($answerRecord->save()) {
+                return true;
+            }
         }
+        return false;
     }
 
     /**

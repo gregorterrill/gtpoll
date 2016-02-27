@@ -33,22 +33,26 @@
     var $form = $(this),
         $poll = $form.parents('.gtPoll'),
         pollId = $form.find('input[name="poll"]').val(),
-        answerId = $form.find('input[type="radio"]').val(),
+        answerId = $form.find('input[type="radio"]:checked').val(),
         actionURL = $form.find('input[name="action"]').val(),
         cookieName = 'poll' + pollId + 'complete',
         data = $form.serialize()
 
     //submit via an AJAX call
-    $.post(actionURL, function(data, response) {
-
-      //flip the card
-      $poll.removeClass('gtPoll--active').addClass('gtPoll--inactive');
-      //animate the poll bars after the flip (should use onTransEnd for this)
-      setTimeout(function() {
-        animatePollBars($poll, answerId);
-      }, 500);
-      //set the cookie to indicate the poll has been completed
-      document.cookie = cookieName + '=true';
+    $.ajax({
+      url: actionURL,
+      type: 'POST',
+      data: data,
+      complete: function(response) {
+        //flip the card
+        $poll.removeClass('gtPoll--active').addClass('gtPoll--inactive');
+        //animate the poll bars after the flip (should use onTransEnd for this)
+        setTimeout(function() {
+          animatePollBars($poll, answerId);
+        }, 500);
+        //set the cookie to indicate the poll has been completed
+        document.cookie = cookieName + '=true';
+      }
     });
   });
 

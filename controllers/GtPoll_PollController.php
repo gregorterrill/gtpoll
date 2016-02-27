@@ -28,6 +28,7 @@ class GtPoll_PollController extends BaseController
     public function actionIncrementAnswer()
     {
         $this->requirePostRequest();
+        $this->requireAjaxRequest();
 
         // get POST data
         $pollId = craft()->request->getPost('poll');
@@ -35,10 +36,11 @@ class GtPoll_PollController extends BaseController
 
         // increment the answer's response count
         if (craft()->gtPoll->incrementAnswer($answerId)) {
-            return true;
+            $response = array('response' => 'Answer incremented');
         } else {
-            return false;
+            $response = array('response' => 'Answer failed to increment');
         }
+        $this->returnJson($response);
     }
 
     /**

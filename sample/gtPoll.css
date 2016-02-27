@@ -1,56 +1,9 @@
-/*
-.gtPoll__question,
-.gtPoll__results {
-  background-color:#CCC; 
-  padding:1.5rem;
-}
-
-.gtPoll__question-text {
-  font-size:1.125rem;
-  display:block;
-  margin:1rem 0;
-}
-
-.gtPoll__response-label,
-.gtPoll__result-info {
-  font-size:1rem;
-  color:#000;
-}
-
-.gtPoll__answer-list {
-  list-style-type: none;
-  margin:0;
-  padding:0;
-}
-
-.gtPoll__answer-item {
-  margin-bottom: 1rem;
-}
-
-.gtPoll__answer-list::last-of-type {
-  margin-bottom:0;
-}
-
-.gtPoll__result-bar {
-  height:1rem;
-  width:1px;
-  background-color:#41985E; 
-  transition:0.5s width ease-in-out;
-}
-
-.gtPoll--inactive .gtPoll__question { display:none; }
-.gtPoll--active .gtPoll__results { display:none; }
-*/
-
 .gtPoll {
   display: inline-block;
   perspective: 1000px;
   position: relative;
-  transition: 0.5s;
-  transform-style: preserve-3d;
-  position:absolute;
-  height:100%;
-  width:100%;
+  width:500px;
+  height:500px;
 }
 
 .gtPoll__card {
@@ -67,6 +20,7 @@
 
 .gtPoll__question,
 .gtPoll__results {
+  display:block;
   background-color:#CCC; 
   padding:1.5rem;
   backface-visibility: hidden;
