@@ -4,6 +4,10 @@ Create polls and get your users' opinions.
 
 ![Screenshot](resources/screenshots/plugin_logo.png)
 
+## PLEASE NOTE
+
+This plugin was created as a sample plugin and has a very limited feature set. At this time, there are no plans to enhance it or update it for Craft 3. Use it at your own risk. If you're interested in the dev process, read more about it in [this blog post](http://gregorterrill.com/blog/2016/building-a-polls-plugin-in-craft).
+
 ## Installation
 
 To install GT Poll, follow these steps:
