@@ -50,6 +50,21 @@ class GtPollService extends BaseApplicationComponent
             // save the record, so we can save our answers with the relationship
             if ($pollRecord->save()) {
 
+                // Get all the pre-saved Poll Answers
+                $old_answers_models = GtPoll_AnswerRecord::model()->findAllByAttributes(array('pollId' => $poll->id));
+                // Extract array of ids from old answer models
+                $old_answers = array_map(function($old_answers_model){  return $old_answers_model->id; }, $old_answers_models);
+                // Extract array of ids from new answer models
+                $new_answers = array_map(function($answers_model){ return $answers_model->id; }, $answers);
+                 // compare the two arrays to get any exluded ids (deleted answers)
+                $exclusive_ids = array_diff($old_answers, $new_answers);
+                // Loop through and delete outdated answers
+                foreach ($exclusive_ids as $exclusive_id) {
+                    // remove any exclusive ids 
+                    GtPoll_AnswerRecord::model()->deleteByPK($exclusive_id);
+                }
+
+                
                 // for each answer...
                 foreach ($answers as $answer) {
 
